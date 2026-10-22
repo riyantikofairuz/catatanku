@@ -10,6 +10,7 @@ class AddNoteScreen extends StatefulWidget {
 }
 
 class _AddNoteScreenState extends State<AddNoteScreen> {
+  String? _selectedCategory;
   int _selectedColor = 0;
   String _selectedPriority = 'Sedang';
 
@@ -22,8 +23,8 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   ];
 
   final List<String> _priorities = ['Rendah', 'Sedang', 'Tinggi'];
+
   @override
-  String? _selectedCategory;
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Tambah Catatan')),
