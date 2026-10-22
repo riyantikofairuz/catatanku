@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
+import '../data/dummy_notes.dart';
+import '../widgets/note_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,6 +17,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final filteredNotes = _selectedCategory == 'Semua'
+        ? dummyNotes
+        : dummyNotes.where((n) => n.category == _selectedCategory).toList();
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -78,6 +83,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: filteredNotes.length,
+                  itemBuilder: (context, index) {
+                    final note = filteredNotes[index];
+                    return NoteCard(note: note, onTap: () {});
+                  },
+                ),
+              ),
             ],
           ),
         ),
