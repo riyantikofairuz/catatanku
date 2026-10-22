@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../data/dummy_notes.dart';
 import '../widgets/note_card.dart';
+import 'detail_note_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -88,13 +89,45 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: filteredNotes.length,
                   itemBuilder: (context, index) {
                     final note = filteredNotes[index];
-                    return NoteCard(note: note, onTap: () {});
+                    return NoteCard(
+                      note: note,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => DetailNoteScreen(note: note),
+                          ),
+                        );
+                      },
+                    );
                   },
                 ),
               ),
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: AppTheme.primary,
+        foregroundColor: Colors.white,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+        selectedItemColor: AppTheme.primary,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.folder_outlined),
+            label: 'Arsip',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            label: 'Profil',
+          ),
+        ],
       ),
     );
   }
