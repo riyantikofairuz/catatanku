@@ -4,6 +4,7 @@ import '../theme/app_theme.dart';
 import '../data/dummy_notes.dart';
 import '../widgets/note_card.dart';
 import 'detail_note_screen.dart';
+import 'add_note_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -108,7 +109,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AddNoteScreen()),
+          );
+        },
         backgroundColor: AppTheme.primary,
         foregroundColor: Colors.white,
         shape: const CircleBorder(),
