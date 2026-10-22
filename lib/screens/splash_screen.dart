@@ -10,17 +10,51 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.85, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+
+    _controller.forward();
+
+    Future.delayed(const Duration(milliseconds: 2600), () {
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 500),
+          pageBuilder: (_, animation, secondaryAnimation) =>
+              const LoginScreen(),
+          transitionsBuilder: (_, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
       );
     });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -33,56 +67,114 @@ class _SplashScreenState extends State<SplashScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFFDCE8FF), Colors.white],
+            colors: [
+              Color(0xFFE6EEFF),
+              Color(0xFFF3F6FD),
+              Colors.white,
+            ],
           ),
         ),
-        child: Center(
+        child: SafeArea(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: AppTheme.primary,
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: const Icon(
-                  Icons.edit_note,
-                  size: 60,
-                  color: Colors.white,
+              const Spacer(),
+              // Logo & App Name with Animation
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Elevated App Icon
+                      Container(
+                        padding: const EdgeInsets.all(22),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [AppTheme.primary, AppTheme.primaryDark],
+                          ),
+                          borderRadius: BorderRadius.circular(28),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.primary.withValues(alpha: 0.35),
+                              blurRadius: 24,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.edit_note_rounded,
+                          size: 56,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Nama Aplikasi
+                      const Text(
+                        'CatatanKu',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.5,
+                          color: AppTheme.textDark,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Tagline
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: Text(
+                          'Simpan setiap ide, rencana, dan momen berharga dengan lebih mudah dan rapi.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            height: 1.5,
+                            color: AppTheme.textMedium.withValues(alpha: 0.9),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 16),
 
-              // Nama aplikasi
-              const Text(
-                'CatatanKu',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.textDark,
-                ),
-              ),
-              const SizedBox(height: 8),
+              const Spacer(),
 
-              // Tagline
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40),
-                child: Text(
-                  'Simpan setiap ide, rencana, dan momen berharga dalam satu tempat.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: AppTheme.textGrey),
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // Progress bar
-              const SizedBox(
-                width: 120,
-                child: LinearProgressIndicator(
-                  minHeight: 6,
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
+              // Loading indicator & Footer
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 140,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: const LinearProgressIndicator(
+                          minHeight: 5,
+                          backgroundColor: Color(0xFFE2E8F0),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppTheme.primary,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Versi 1.0.0 • Produktivitas Tanpa Batas',
+                      style: TextStyle(
+                        fontSize: 12,
+                        letterSpacing: 0.3,
+                        color: AppTheme.textGrey.withValues(alpha: 0.9),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                 ),
               ),
             ],

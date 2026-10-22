@@ -11,62 +11,136 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController =
+      TextEditingController(text: 'fairuz@catatanku.id');
+  final TextEditingController _passwordController =
+      TextEditingController(text: '••••••••');
   bool _hidePassword = true;
+  bool _rememberMe = true;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _handleLogin() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.background,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(50),
-          child: SizedBox(
-            width: double.infinity,
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 40),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primary,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Icon(
-                    Icons.edit_note,
-                    size: 40,
-                    color: Colors.white,
+                const SizedBox(height: 10),
+
+                // Brand Icon Header
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [AppTheme.primary, AppTheme.primaryDark],
+                      ),
+                      borderRadius: BorderRadius.circular(22),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.primary.withValues(alpha: 0.3),
+                          blurRadius: 18,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.edit_note_rounded,
+                      size: 38,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
+
+                // Welcome texts
+                const Center(
+                  child: Text(
+                    'Selamat Datang!',
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w800,
+                      color: AppTheme.textDark,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                const Center(
+                  child: Text(
+                    'Masuk untuk mengakses semua catatanmu',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppTheme.textGrey,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 36),
+
+                // Email Field
                 const Text(
-                  'CatatanKu',
+                  'Email',
                   style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.textDark,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textMedium,
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Masuk untuk melanjutkan',
-                  style: TextStyle(color: AppTheme.textGrey),
-                ),
-                const SizedBox(height: 32),
-                const TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Email',
-                    prefixIcon: Icon(Icons.email_outlined),
+                TextField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    hintText: 'nama@email.com',
+                    prefixIcon: Icon(Icons.mail_outline_rounded, size: 20),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
+
+                // Password Field
+                const Text(
+                  'Kata Sandi',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textMedium,
+                  ),
+                ),
+                const SizedBox(height: 8),
                 TextField(
+                  controller: _passwordController,
                   obscureText: _hidePassword,
                   decoration: InputDecoration(
-                    hintText: 'Password',
-                    prefixIcon: const Icon(Icons.lock_outline),
+                    hintText: 'Masukkan kata sandi',
+                    prefixIcon:
+                        const Icon(Icons.lock_outline_rounded, size: 20),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _hidePassword ? Icons.visibility_off : Icons.visibility,
+                        _hidePassword
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        size: 20,
                       ),
                       onPressed: () {
                         setState(() {
@@ -76,54 +150,171 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => const HomeScreen()),
-                    );
-                  },
-                  child: const Text('Masuk'),
-                ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 12),
+
+                // Remember me & Forgot password
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Expanded(child: Divider()),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Text('atau'),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: Checkbox(
+                            value: _rememberMe,
+                            activeColor: AppTheme.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            onChanged: (val) {
+                              setState(() {
+                                _rememberMe = val ?? false;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Text(
+                          'Ingat saya',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppTheme.textMedium,
+                          ),
+                        ),
+                      ],
                     ),
-                    const Expanded(child: Divider()),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Fitur reset kata sandi dikirim ke email terdaftar.',
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Lupa Sandi?',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.primary,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/google_logo.png',
-                          width: 20,
-                          height: 20,
-                        ),
-                        const SizedBox(width: 12),
-                        const Text('Masuk dengan Google'),
-                      ],
-                    ),
+
+                // Submit Button
+                ElevatedButton(
+                  onPressed: _handleLogin,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Masuk Sekarang'),
+                      SizedBox(width: 8),
+                      Icon(Icons.arrow_forward_rounded, size: 18),
+                    ],
                   ),
                 ),
-              ], // Children
+                const SizedBox(height: 24),
+
+                // Divider
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        color: AppTheme.border,
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        'atau masuk dengan',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppTheme.textGrey,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        color: AppTheme.border,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                // Google Login Button
+                OutlinedButton(
+                  onPressed: _handleLogin,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/images/google_logo.png',
+                        width: 20,
+                        height: 20,
+                      ),
+                      const SizedBox(width: 12),
+                      const Text(
+                        'Masuk dengan Google',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 32),
+
+                // Register prompt
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Belum punya akun? ',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppTheme.textGrey,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Pendaftaran akun baru dapat dilakukan melalui Google.',
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Daftar Sekarang',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppTheme.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
             ),
           ),
         ),
