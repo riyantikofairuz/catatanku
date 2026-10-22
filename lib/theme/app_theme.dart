@@ -15,14 +15,21 @@ class AppTheme {
       style: ElevatedButton.styleFrom(
         backgroundColor: primary,
         foregroundColor: Colors.white,
-        // minimumSize: Size(double.infinity, 50)
-        // shape: RoundedRectangleBorder radius 12
+        minimumSize: const Size(double.infinity, 50),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.white,
-      // border, enabledBorder, focusedBorder
+      border: _border(Colors.grey.shade300),
+      enabledBorder: _border(Colors.grey.shade300),
+      focusedBorder: _border(primary),
     ),
+  );
+
+  static OutlineInputBorder _border(Color color) => OutlineInputBorder(
+    borderRadius: BorderRadius.circular(12),
+    borderSide: BorderSide(color: color),
   );
 }
