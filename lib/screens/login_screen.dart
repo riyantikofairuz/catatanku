@@ -14,7 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController =
       TextEditingController(text: 'fairuz@catatanku.id');
   final TextEditingController _passwordController =
-      TextEditingController(text: '••••••••');
+      TextEditingController(text: '12345678');
   bool _hidePassword = true;
   bool _rememberMe = true;
 
